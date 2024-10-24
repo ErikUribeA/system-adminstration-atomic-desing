@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Proyecto de Administración de Vacantes y Compañías
 
-First, run the development server:
+Este proyecto es una plataforma administrativa para gestionar vacantes y compañías, desarrollado con **Next.js** y siguiendo la metodología de **Atomic Design**. Su objetivo es ofrecer una interfaz modular y escalable, manteniendo un código limpio y reutilizable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Estructura del Proyecto
+
+La estructura sigue el enfoque de Atomic Design, organizando los componentes en átomos, moléculas, organismos y plantillas:
+
+```
+src/
+│
+├── app/
+│   ├── layout.tsx       # Layout principal de la aplicación
+│   ├── page.tsx         # Página principal de la aplicación
+│   ├── providers.tsx    # Provider que envuelve el children
+│   ├── registry.tsx     # Archivo para evitar que los estilos se carguen detrás
+│   ├── style.sass       # Archivo de estilos
+│
+├── store/               # Lógica de estado usando Zustand
+├── theme/               # Configuración de temas y colores
+├── types/               # Definiciones de tipos TypeScript
+│
+├── ui/
+│   ├── atoms/           # Componentes básicos e indivisibles
+│   ├── forms/           # Formularios reutilizables
+│   ├── molecules/       # Componentes formados por átomos
+│   ├── organisms/       # Componentes complejos formados por moléculas
+│   ├── templates/       # Plantillas de páginas o secciones
+│   └── theme/           # Configuraciones de tema como colores y fuentes
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tecnologías Utilizadas
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Next.js 14**
+- **React 18**
+- **Sass** y **Styled-Components** para los estilos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Instalación
 
-## Learn More
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/tu-usuario/tu-repositorio.git
+   ```
+2. Instalar las dependencias:
+   ```bash
+   npm install
+   ```
+3. Ejecutar el proyecto en modo desarrollo:
+   ```bash
+   npm run dev
+   ```
+4. Abrir [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
 
-To learn more about Next.js, take a look at the following resources:
+## Funcionalidades
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Panel de Administración**: Cambia entre la vista de vacantes y compañías.
+- **Formularios Modales**: Para agregar y editar vacantes o compañías.
+- **Listados**: Muestra tarjetas con detalles, y opciones para editar o eliminar.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
