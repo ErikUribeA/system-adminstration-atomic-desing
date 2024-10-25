@@ -68,7 +68,7 @@ const Navbar: React.FC<INavbar> = ({
   };
 
   const handleFirstButtonClick = () => {
-    setItemType('job');
+    setItemType('vacant');
     onFirstButtonClick();
   };
 
@@ -86,13 +86,13 @@ const Navbar: React.FC<INavbar> = ({
         <TabContainer>
           <Button
             label={firstButtonLabel}
-            color={itemType === 'job' ? "white" : "#374151"}
+            color={itemType === 'vacant' ? "white" : "#374151"}
             icon={<Building2 size={16} />}
             onClick={handleSecondButtonClick}
-            bg={itemType === 'job' ? "#9333ea" : "transparent"}
+            bg={itemType === 'vacant' ? "#9333ea" : "transparent"}
             borderRadius="9999px"
             size="0.5rem 1rem"
-            iconColor={itemType === 'job' ? "white" : "#374151"}
+            iconColor={itemType === 'vacant' ? "white" : "#374151"}
             border="none"
           />
           <Button

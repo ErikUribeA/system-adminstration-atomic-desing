@@ -1,12 +1,19 @@
 .Body
-    height: 100vh // Asegura que el contenedor tenga altura completa
+    min-height: 100vh // Asegura que el contenedor tenga altura completa
     display: flex // Habilita flexbox
-    align-items: end // Centra verticalmente
+    align-items: center // Centra verticalmente
     justify-content: center // Centra horizontalmente
     background: linear-gradient(to right, rgb(192, 132, 252), rgb(236, 72, 153), rgb(239, 68, 68))
+    box-sizing: border-box
 
 .Main
     display: flex
     flex-direction: column
-    width: 85%
-    height: 98% // Ajustar según sea necesario para pantallas grandes
+    width: 90%
+    max-height: 98vh
+    margin: auto
+    box-sizing: border-box
+
+    @media (min-width: 1280px)
+        width: 70%
+        max-height: 80vh

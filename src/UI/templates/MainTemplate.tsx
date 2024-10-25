@@ -111,7 +111,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
             setItemType('company');  // Actualizamos usando Zustand
             setCardData(initialCardData);
         } else {
-            setItemType('job');  // Actualizamos usando Zustand
+                setItemType('vacant');  // Actualizamos usando Zustand
             setCardData(jobData);
         }
     };

@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 
 interface AppState {
-    itemType: 'company' | 'job'
-    setItemType: (type: 'company' | 'job') => void
+    itemType: 'company' | 'vacant'
+    setItemType: (type: 'company' | 'vacant') => void
 }
 
 export const useStore = create<AppState>((set) => ({

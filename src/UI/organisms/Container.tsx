@@ -50,7 +50,7 @@ interface ICardData {
 
 interface ICardContainer {
   cardData: ICardData[];
-  type: 'company' | 'job';
+  type: 'company' | 'vacant';
   title: string;
   onAdd: (data: CompanyFormData | JobFormData) => void;
   onEdit: (id: number, data: CompanyFormData | JobFormData) => void;
@@ -116,7 +116,7 @@ const CardContainer: React.FC<ICardContainer> = ({
     }
   };
 
-  const getButtonColor = (type: 'company' | 'job') => {
+  const getButtonColor = (type: 'company' | 'vacant') => {
     return (theme: DefaultTheme) => {
       const color = type === 'company' ? theme.colors.accent.pink.default : theme.colors.accent.purple.default;
       return {
