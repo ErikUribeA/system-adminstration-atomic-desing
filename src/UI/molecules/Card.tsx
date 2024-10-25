@@ -69,7 +69,7 @@ const Card: React.FC<ICard> = ({
         </>
       )}
 
-      {itemType === 'job' && (
+      {itemType === 'vacant' && (
         <>
           <CardInfo>Descripción: {description}</CardInfo>
           <CardInfo>Estado: {status}</CardInfo>
