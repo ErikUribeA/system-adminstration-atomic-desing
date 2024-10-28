@@ -7,6 +7,7 @@ import CompanyForm, { CompanyFormData } from '../molecules/CompanyForm';
 import JobForm, { JobFormData } from '../molecules/JobForm';
 import Button from '../atoms/Button';
 import { CirclePlus } from "lucide-react";
+import { ICard } from '@/types/card.model';
 
 const Container = styled.div`
   padding: 1rem;
@@ -36,20 +37,9 @@ const GridContainer = styled.div`
   }
 `;
 
-interface ICardData {
-  id: number;
-  title: string;
-  city?: string;
-  phone?: string;
-  description?: string;
-  status?: string;
-  company?: string;
-  firstButtonLabel: string;
-  secondButtonLabel: string;
-}
 
 interface ICardContainer {
-  cardData: ICardData[];
+  cardData: ICard[];
   type: 'company' | 'vacant';
   title: string;
   onAdd: (data: CompanyFormData | JobFormData) => void;
@@ -74,9 +64,9 @@ const CardContainer: React.FC<ICardContainer> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null); // Cambia a 'string | null'
 
-  const handleOpenModal = (mode: 'add' | 'edit', id?: number) => {
+  const handleOpenModal = (mode: 'add' | 'edit', id?: string) => { // Cambia a 'string'
     setModalMode(mode);
     if (id) setSelectedId(id);
     setIsModalOpen(true);
@@ -91,31 +81,31 @@ const CardContainer: React.FC<ICardContainer> = ({
     if (modalMode === 'add') {
       onAdd(data);
     } else if (modalMode === 'edit' && selectedId !== null) {
-      onEdit(selectedId, data);
+      onEdit(selectedId, data); // No necesita conversión
     }
     handleCloseModal();
   };
 
-  const getInitialData = (id: number) => {
+  const getInitialData = (id: string | null) => {
+    if (id === null) return undefined;
     const card = cardData.find(card => card.id === id);
     if (!card) return undefined;
 
     if (type === 'company') {
       return {
-        name: card.title,
-        location: card.city,
-        phone: card.phone,
+        name: card.name, // Asegúrate de que estás accediendo a `card.name` y no a `card.title`
+        location: card.location,
+        phone: card.contact,
       } as CompanyFormData;
     } else {
       return {
         title: card.title,
         description: card.description,
         status: card.status,
-        company: card.company,
+        company: card.company?.name || '', // Encadenamiento opcional
       } as JobFormData;
     }
   };
-
   const getButtonColor = (type: 'company' | 'vacant') => {
     return (theme: DefaultTheme) => {
       const color = type === 'company' ? theme.colors.accent.pink.default : theme.colors.accent.purple.default;
@@ -145,16 +135,14 @@ const CardContainer: React.FC<ICardContainer> = ({
           <Card
             key={data.id}
             title={data.title}
-            city={data.city}
-            phone={data.phone}
+            name={data.name}
+            location={data.location}
+            contact={data.contact}
             description={data.description}
             status={data.status}
-            company={data.company}
-            onFirstButtonClick={() => handleOpenModal('edit', data.id)}
-            onSecondButtonClick={() => onDelete(data.id)}
-            firstButtonLabel={data.firstButtonLabel}
-            secondButtonLabel={data.secondButtonLabel}
-          />
+            onFirstButtonClick={() => handleOpenModal('edit', data.id)} // data.id ahora es string
+            onSecondButtonClick={() => onDelete(data.id)} // data.id ahora es string
+            id={''} />
         ))}
       </GridContainer>
 

@@ -1,17 +1,17 @@
-import { ICreate, IResponseV, IVacant } from "@/types/card.model";
+import { ICompany, ICreate, IResponseC, IVacant } from "@/types/card.model";
 import { HttpClient } from "@/utils/client-http";
 
-export class VacantService {
+export class ComapanyService {
     private httpClient: HttpClient;
 
     constructor() {
         this.httpClient = new HttpClient()
     }
 
-    async findAll(page: number, size: number): Promise<IVacant[]> {
+    async findAll(page: number, size: number): Promise<ICompany[]> {
         try {
-            const response = await this.httpClient.get<IResponseV>(`vacants?page=${page}&size=${size}`);
-
+            const response = await this.httpClient.get<IResponseC>(`company?page=${page}&size=${size}`);
+            console.log(response.content)
             return response.content;
         } catch (error) {
             console.log(error);

@@ -4,21 +4,7 @@ import styled from 'styled-components';
 import IButton from '../atoms/Button';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useStore } from '@/store/store';
- 
-
-interface ICard {
-  title: string;
-  city?: string; // Hacer opcional, ya que no se usa en trabajos
-  phone?: string; // Hacer opcional, ya que no se usa en trabajos
-  description?: string; // Agregar para trabajos
-  status?: string; // Agregar para trabajos
-  company?: string; // Agregar para trabajos
-  onFirstButtonClick: () => void;
-  onSecondButtonClick: () => void;
-  firstButtonLabel: string;
-  secondButtonLabel: string;
-}
-
+import { ICard } from '@/types/card.model';
 
 const CardContainer = styled.div`
   background-color: white;
@@ -48,9 +34,10 @@ const ButtonContainer = styled.div`
 `;
 
 const Card: React.FC<ICard> = ({
+  name,
+  location,
+  contact,
   title,
-  city,
-  phone,
   description,
   status,
   company,
@@ -58,41 +45,45 @@ const Card: React.FC<ICard> = ({
   onSecondButtonClick,
 }) => {
   const { itemType } = useStore();
+
   return (
     <CardContainer>
-      <CardTitle>{title}</CardTitle>
-
-      {itemType === 'company' && (
-        <>
-          <CardInfo>Ciudad: {city}</CardInfo>
-          <CardInfo>Teléfono: {phone}</CardInfo>
-        </>
-      )}
 
       {itemType === 'vacant' && (
         <>
+          <CardTitle>{name}</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardInfo>Descripción: {description}</CardInfo>
           <CardInfo>Estado: {status}</CardInfo>
-          <CardInfo>Empresa: {company}</CardInfo>
+          <CardInfo>Empresa: {company?.name}</CardInfo>
         </>
       )}
+
+      {itemType === 'company' && (
+        <>
+          <CardTitle>{name}</CardTitle>
+          <CardInfo>Ciudad: {location}</CardInfo>
+          <CardInfo>Teléfono: {contact}</CardInfo>
+        </>
+      )}
+
       <ButtonContainer>
         <IButton
           icon={<Pencil />}
-          iconColor="rgb(168, 85, 247)" // Especifica el color del ícono
+          iconColor="rgb(168, 85, 247)"
           bg='rgb(255, 255, 255)'
           borderRadius="0.5rem"
-          border="2px solid  rgb(229, 231, 235)" // Ejemplo de borde
+          border="2px solid  rgb(229, 231, 235)"
           onClick={onFirstButtonClick}
           size='0.5rem' />
         <IButton
           onClick={onSecondButtonClick}
           icon={<Trash2 />}
-          iconColor="rgb(239, 68, 68)" // Especifica el color del ícono
+          iconColor="rgb(239, 68, 68)"
           iconSize='2rem'
           bg='rgb(255, 255, 255)'
           borderRadius="0.5rem"
-          border="2px solid  rgb(229, 231, 235)" // Ejemplo de borde
+          border="2px solid  rgb(229, 231, 235)"
         />
       </ButtonContainer>
     </CardContainer>

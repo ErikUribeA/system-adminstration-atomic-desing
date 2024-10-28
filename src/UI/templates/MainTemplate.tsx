@@ -7,23 +7,11 @@ import CardContainer from "../organisms/Container";
 import Footer from "../organisms/Footer";
 import styled from "styled-components";
 import { useStore } from "@/store/store";
-
-interface Data {
-    id: number;
-    title: string;
-    city?: string;
-    phone?: string;
-    description?: string;
-    status?: string;
-    company?: string;
-    firstButtonLabel: string;
-    secondButtonLabel: string;
-}
-
+import { ICompany, IVacant } from "@/types/card.model";
 
 interface HomePageProps {
-    initialCardData: Data[];
-    jobData: Data[];
+    initialCardData: ICompany[];
+    jobData: IVacant[];
     totalPages: number;
     navbarConfig: {
         title: string;
@@ -74,7 +62,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
         }
     };
 
-    const handleEdit = useCallback((id: number) => {
+    const handleEdit = useCallback((id: string) => {
         setCardData(prevCards =>
             prevCards.map(card => {
                 if (card.id === id) {
@@ -87,7 +75,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
         );
     }, []);
 
-    const handleDelete = useCallback((id: number) => {
+    const handleDelete = useCallback((id: string) => {
         setCardData(prevCards => prevCards.filter(card => card.id !== id));
     }, []);
 
@@ -99,9 +87,9 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
 
         setCardData(prevCards =>
             prevCards.filter(card =>
-                card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                card.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||  // Usar encadenamiento opcional
-                card.phone?.includes(searchTerm)  // Usar encadenamiento opcional
+                card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                card.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||  // Usar encadenamiento opcional
+                card.contact?.includes(searchTerm)  // Usar encadenamiento opcional
             )
         );
     }, [initialCardData]);
@@ -111,16 +99,16 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
             setItemType('company');  // Actualizamos usando Zustand
             setCardData(initialCardData);
         } else {
-                setItemType('vacant');  // Actualizamos usando Zustand
+            setItemType('vacant');  // Actualizamos usando Zustand
             setCardData(jobData);
         }
     };
 
-    const enrichedCardData = cardData.map(card => ({
+    const enrichedCardData = Array.isArray(cardData) ? cardData.map(card => ({
         ...card,
         onFirstButtonClick: () => handleEdit(card.id),
         onSecondButtonClick: () => handleDelete(card.id)
-    }));
+    })) : [];
 
     const handleAddItem = (data: CompanyFormData | JobFormData) => {
         console.log('Añadiendo:', data);
