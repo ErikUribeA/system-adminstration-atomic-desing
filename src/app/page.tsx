@@ -7,7 +7,7 @@ const useVacantService = new VacantService()
 const useCompanyService = new CompanyService()
 
 const HomePage = async () => {
-  const dataC = await useCompanyService.findAll(3, 6)
+  const dataC = await useCompanyService.findAll(1, 6)
   const dataV = await useVacantService.findAll(1, 6)
   const navbarConfig = {
     title: "Panel de Administración",

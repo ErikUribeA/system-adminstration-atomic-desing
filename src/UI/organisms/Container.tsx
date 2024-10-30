@@ -102,7 +102,7 @@ const CardContainer: React.FC<ICardContainer> = ({
         title: card.title,
         description: card.description,
         status: card.status,
-        company: card.company?.name || '', // Encadenamiento opcional
+        companyId: card.company?.name || '', // Encadenamiento opcional
       } as JobFormData;
     }
   };
