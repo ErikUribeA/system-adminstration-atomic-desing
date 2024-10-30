@@ -1,7 +1,7 @@
-import { ICompany, ICreate, IResponseC, IVacant } from "@/types/card.model";
+import { ICompany, ICreateCompany, IResponseC, IVacant } from "@/types/card.model";
 import { HttpClient } from "@/utils/client-http";
 
-export class ComapanyService {
+export class CompanyService {
     private httpClient: HttpClient;
 
     constructor() {
@@ -30,11 +30,10 @@ export class ComapanyService {
         }
     }
 
-    async create(coder: ICreate) {
+    async create(company: ICreateCompany) {
         try {
-            const createCoder = this.httpClient.post("Coders", coder)
-
-            return createCoder
+            const createCompany = this.httpClient.post("company", company)
+            return createCompany
         } catch (error) {
             console.log(error)
             throw error;

@@ -12,10 +12,10 @@ interface ISelect {
 
 interface IStyledSelect {
   disabled: boolean;
-  $itemType: 'company' | 'job';
+  $itemType: 'company' | 'vacant';
 }
 
-const getFocusColor = (itemType: 'company' | 'job') => {
+const getFocusColor = (itemType: 'company' | 'vacant') => {
   return (theme: DefaultTheme) =>
     itemType === 'company'
       ? theme.colors.border.focus.pink
@@ -37,7 +37,7 @@ const StyledSelect = styled.select<IStyledSelect>`
   &:focus {
     border-color: ${({ $itemType, theme }) => getFocusColor($itemType)(theme)};
   }
-
+jo
   &:disabled {
     opacity: 0.7;
   }

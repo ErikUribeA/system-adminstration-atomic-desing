@@ -5,12 +5,15 @@ import Label from '../atoms/Label';
 import Select from '../atoms/Select';
 import Textarea from '../atoms/TextArea';
 import Button from '../atoms/Button';
+import { useRouter } from 'next/navigation'
+import { VacantService } from '@/services/vacantes.service';
+import { toast } from 'react-toastify'
 
 export interface JobFormData {
     title: string;
     description: string;
     status: string;
-    company: string;
+    companyId: string;
 }
 
 interface JobFormProps {
@@ -23,20 +26,34 @@ const FormGroup = styled.div`
     margin-bottom: 1rem;
 `;
 
-const JobForm: React.FC<JobFormProps> = ({ initialData, onSubmit }) => {
+const JobForm: React.FC<JobFormProps> = ({ initialData }) => {
     const [formData, setFormData] = React.useState<JobFormData>(
         initialData || {
             title: '',
             description: '',
             status: '',
-            company: '',
+            companyId: '',
         }
     );
+    const router = useRouter();
+    const vacantService = new VacantService();
 
-    const handleSubmit = () => {
-        onSubmit(formData);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const response = await vacantService.create(formData)
+            if (response) {
+                toast.success('The vacant was created successfully')
+                router.refresh()
+            } else {
+                console.log('erorr')
+            }
+        } catch (error) {
+            console.error("Error al crear el coder:", error)
+        }
+
     };
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -73,17 +90,17 @@ const JobForm: React.FC<JobFormProps> = ({ initialData, onSubmit }) => {
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Seleccionar Tipo' },
-                        { value: 'open', label: 'OPEN' },
+                        { value: 'ACTIVE', label: 'OPEN' },
                         { value: 'close', label: 'CLOSE' },
                     ]}
                 />
             </FormGroup>
 
-            <FormGroup>
+            {/* <FormGroup>
                 <Label htmlFor="company" text="Compañía" />
                 <Select
                     name="company" // Corregido a "company"
-                    value={formData.company}
+                    value={formData.companyId}
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Seleccionar Compañía' },
@@ -91,12 +108,22 @@ const JobForm: React.FC<JobFormProps> = ({ initialData, onSubmit }) => {
                     ]}
                 />
             </FormGroup>
+             */}
+            <FormGroup>
+                <Label htmlFor="title" text="Company id" />
+                <Input
+                    type="text"
+                    name="companyId"
+                    value={formData.companyId}
+                    onChange={handleChange}
+                />
+            </FormGroup>
 
             <Button
                 width='100%'
                 borderRadius='0.5rem'
                 label="Agregar"
-                onClick={() => handleSubmit()}
+                onClick={(e) => handleSubmit(e)}
                 size="0.5em"
             />
         </form>

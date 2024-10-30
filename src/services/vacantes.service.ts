@@ -1,4 +1,4 @@
-import { ICreate, IResponseV, IVacant } from "@/types/card.model";
+import {  ICreateVacancy, IResponseV, IVacant } from "@/types/card.model";
 import { HttpClient } from "@/utils/client-http";
 
 export class VacantService {
@@ -30,11 +30,10 @@ export class VacantService {
         }
     }
 
-    async create(coder: ICreate) {
+    async create(vacant: ICreateVacancy) {
         try {
-            const createCoder = this.httpClient.post("Coders", coder)
-
-            return createCoder
+            const createCompany = this.httpClient.post("vacants", vacant)
+            return createCompany
         } catch (error) {
             console.log(error)
             throw error;

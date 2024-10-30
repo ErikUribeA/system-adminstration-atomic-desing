@@ -1,4 +1,4 @@
-const defaultBaseUrl = "http://vacantsbackendgates-production.up.railway.app/api/v1"
+const defaultBaseUrl = "https://vacantsbackendgates-production.up.railway.app/api/v1"
 
 export class HttpClient {
     private baseUrl: string;

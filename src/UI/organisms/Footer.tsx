@@ -9,7 +9,7 @@ const FooterContainer = styled.footer`
 
 interface IFooterProps {
   currentPage: number;
-  totalPages: number;
+  totalPages: number;   
   onNext: () => void;
   onPrevious: () => void;
 }

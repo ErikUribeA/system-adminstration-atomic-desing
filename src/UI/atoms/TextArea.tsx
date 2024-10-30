@@ -13,10 +13,10 @@ interface ITextarea {
 
 interface IStyledTextArea {
   disabled: boolean;
-  $itemType: 'company' | 'job';
+  $itemType: 'company' | 'vacant';
 }
 
-const getFocusColor = (itemType: 'company' | 'job') => {
+const getFocusColor = (itemType: 'company' | 'vacant') => {
   return (theme: DefaultTheme) =>
     itemType === 'company'
       ? theme.colors.border.focus.pink

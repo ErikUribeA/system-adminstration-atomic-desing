@@ -3,16 +3,18 @@ import styled from 'styled-components';
 import Button from '../atoms/Button';
 import Label from '../atoms/Label';
 import Input from '../atoms/Input';
+import { useRouter } from 'next/navigation'
+import { CompanyService } from '@/services/company.service';
+import { toast } from 'react-toastify'
 
 const FormGroup = styled.div`
   margin-bottom: 1rem;
 `;
 
-
 export interface CompanyFormData {
   name: string;
   location: string;
-  phone: string;
+  contact: string;
 }
 
 interface CompanyFormProps {
@@ -21,19 +23,33 @@ interface CompanyFormProps {
   onCancel: () => void;
 }
 
-const CompanyForm: React.FC<CompanyFormProps> = ({ initialData, onSubmit }) => {
+const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
   const [formData, setFormData] = React.useState<CompanyFormData>(
     initialData || {
       name: '',
       location: '',
-      phone: '',
+      contact: '',
     }
   );
+  const router = useRouter()
+  const companyService = new CompanyService()
 
-  const handleSubmit = () => {
-    onSubmit(formData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await companyService.create(formData)
+      if (response) {
+        toast.success('The company was created successfully')
+        router.refresh()
+      } else {
+        console.log('erorr')
+      }
+    } catch (error) {
+      console.error("Error al crear el coder:", error)
+    }
+
   };
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -65,11 +81,11 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData, onSubmit }) => {
       </FormGroup>
 
       <FormGroup>
-        <Label htmlFor="phone" text="Telefono" />
+        <Label htmlFor="contact" text="Telefono" />
         <Input
           type="tel"
-          name="phone"
-          value={formData.phone}
+          name="contact"
+          value={formData.contact}
           onChange={handleChange}
         />
       </FormGroup>
@@ -78,9 +94,9 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData, onSubmit }) => {
         width='100%'
         borderRadius='0.5rem'
         label="Agregar"
-        onClick={() => handleSubmit()}
         size="0.5em"
-        bg={(theme) => theme.colors.accent.pink} // Color del tema
+        bg={(theme) => theme.colors.accent.pink}
+        onClick={(e) => e}
       />
     </form>
   );

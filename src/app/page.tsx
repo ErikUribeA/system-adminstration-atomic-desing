@@ -1,13 +1,13 @@
-import { ComapanyService } from '@/services/company.service';
+import { CompanyService } from '@/services/company.service';
 import { VacantService } from '@/services/vacantes.service';
 import MainTemplate from '@/UI/templates/MainTemplate';
 import React from 'react';
 
 const useVacantService = new VacantService()
-const useCompanyService = new ComapanyService()
+const useCompanyService = new CompanyService()
 
 const HomePage = async () => {
-  const dataC = await useCompanyService.findAll(1, 6)
+  const dataC = await useCompanyService.findAll(3, 6)
   const dataV = await useVacantService.findAll(1, 6)
   const navbarConfig = {
     title: "Panel de Administración",

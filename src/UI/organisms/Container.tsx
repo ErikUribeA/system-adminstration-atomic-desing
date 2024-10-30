@@ -43,9 +43,10 @@ interface ICardContainer {
   type: 'company' | 'vacant';
   title: string;
   onAdd: (data: CompanyFormData | JobFormData) => void;
-  onEdit: (id: number, data: CompanyFormData | JobFormData) => void;
-  onDelete: (id: number) => void;
+  onEdit: (id: number | string, data: CompanyFormData | JobFormData) => void;
+  onDelete: (id: number | string) => void;
 }
+
 
 const Title = styled.h1`
   text-align: center;
@@ -64,11 +65,11 @@ const CardContainer: React.FC<ICardContainer> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-  const [selectedId, setSelectedId] = useState<string | null>(null); // Cambia a 'string | null'
+  const [selectedId, setSelectedId] = useState<number | string | null>(null);
 
-  const handleOpenModal = (mode: 'add' | 'edit', id?: string) => { // Cambia a 'string'
+  const handleOpenModal = (mode: 'add' | 'edit', id?: number | string) => {
     setModalMode(mode);
-    if (id) setSelectedId(id);
+    if (id) setSelectedId(id); // No necesitas conversión
     setIsModalOpen(true);
   };
 
@@ -85,17 +86,16 @@ const CardContainer: React.FC<ICardContainer> = ({
     }
     handleCloseModal();
   };
-
-  const getInitialData = (id: string | null) => {
+  const getInitialData = (id: number | string | null) => {
     if (id === null) return undefined;
-    const card = cardData.find(card => card.id === id);
+    const card = cardData.find(card => card.id === id.toString() || card.id === id);
     if (!card) return undefined;
 
     if (type === 'company') {
       return {
-        name: card.name, // Asegúrate de que estás accediendo a `card.name` y no a `card.title`
+        name: card.name, 
         location: card.location,
-        phone: card.contact,
+        contact: card.contact,
       } as CompanyFormData;
     } else {
       return {
@@ -140,9 +140,11 @@ const CardContainer: React.FC<ICardContainer> = ({
             contact={data.contact}
             description={data.description}
             status={data.status}
-            onFirstButtonClick={() => handleOpenModal('edit', data.id)} // data.id ahora es string
-            onSecondButtonClick={() => onDelete(data.id)} // data.id ahora es string
-            id={''} />
+            onFirstButtonClick={() => handleOpenModal('edit', data.id)} // data.id es de tipo number | string
+            onSecondButtonClick={() => onDelete(data.id)} // data.id es de tipo number | string
+            id={data.id.toString()} // Si necesitas un string para el componente Card
+          />
+
         ))}
       </GridContainer>
 

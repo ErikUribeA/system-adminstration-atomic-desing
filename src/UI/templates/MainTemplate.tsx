@@ -7,7 +7,7 @@ import CardContainer from "../organisms/Container";
 import Footer from "../organisms/Footer";
 import styled from "styled-components";
 import { useStore } from "@/store/store";
-import { ICompany, IVacant } from "@/types/card.model";
+import { ICard, ICompany, IVacant, transformToCard } from "@/types/card.model";
 
 interface HomePageProps {
     initialCardData: ICompany[];
@@ -33,10 +33,12 @@ const Container = styled.div`
 
 const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: HomePageProps) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [cardData, setCardData] = useState(initialCardData);
+    const [cardData, setCardData] = useState<(ICompany | IVacant)[]>(initialCardData);
+    const { itemType, setItemType } = useStore();
 
-    // Usar Zustand en lugar de useState
-    const { itemType, setItemType } = useStore();  // Obtenemos el estado del store
+    const isICompany = (card: ICompany | IVacant): card is ICompany => {
+        return (card as ICompany).location !== undefined;
+    };
 
     const handleNext = () => {
         if (currentPage < totalPages) {
@@ -62,7 +64,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
         }
     };
 
-    const handleEdit = useCallback((id: string) => {
+    const handleEdit = useCallback((id: string | number) => {
         setCardData(prevCards =>
             prevCards.map(card => {
                 if (card.id === id) {
@@ -75,7 +77,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
         );
     }, []);
 
-    const handleDelete = useCallback((id: string) => {
+    const handleDelete = useCallback((id: string | number) => {
         setCardData(prevCards => prevCards.filter(card => card.id !== id));
     }, []);
 
@@ -84,45 +86,61 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
             setCardData(initialCardData);
             return;
         }
-
+    
         setCardData(prevCards =>
-            prevCards.filter(card =>
-                card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                card.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||  // Usar encadenamiento opcional
-                card.contact?.includes(searchTerm)  // Usar encadenamiento opcional
-            )
+            prevCards.filter(card => {
+                if (isICompany(card)) {
+                    return (
+                        card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        card.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        card.contact?.includes(searchTerm)
+                    );
+                } else {
+                    return (
+                        card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        card.title?.includes(searchTerm)
+                    );
+                }
+            })
         );
     }, [initialCardData]);
 
     const handleNavbarButtonClick = (type: 'first' | 'second') => {
         if (type === 'first') {
-            setItemType('company');  // Actualizamos usando Zustand
+            setItemType('company');
             setCardData(initialCardData);
         } else {
-            setItemType('vacant');  // Actualizamos usando Zustand
+            setItemType('vacant');
             setCardData(jobData);
         }
     };
 
-    const enrichedCardData = Array.isArray(cardData) ? cardData.map(card => ({
-        ...card,
-        onFirstButtonClick: () => handleEdit(card.id),
-        onSecondButtonClick: () => handleDelete(card.id)
-    })) : [];
+    const enrichedCardData: ICard[] = Array.isArray(cardData) 
+        ? cardData.map(card => 
+            transformToCard(
+                card,
+                itemType, // 'company' o 'vacant'
+                () => handleEdit(card.id),
+                () => handleDelete(card.id)
+            )
+        )
+        : [];
 
     const handleAddItem = (data: CompanyFormData | JobFormData) => {
         console.log('Añadiendo:', data);
     };
 
-    const handleEditItem = (id: number, data: CompanyFormData | JobFormData) => {
+    const handleEditItem = (id: string | number, data: CompanyFormData | JobFormData) => {
         console.log('Editando id:', id, 'con datos:', data);
+        handleEdit(id);  // Llama a handleEdit para editar el ítem
     };
 
-    const handleDeleteItem = (id: number) => {
+    const handleDeleteItem = (id: string | number) => {
         console.log('Eliminando id:', id);
+        handleDelete(id);  // Llama a handleDelete para eliminar el ítem
     };
 
-    const dynamicTitle = itemType === 'company' ? 'Compañias' : 'Vacantes'
+    const dynamicTitle = itemType === 'company' ? 'Compañías' : 'Vacantes';
 
     return (
         <Container>
@@ -137,7 +155,7 @@ const MainTemplate = ({ initialCardData, jobData, totalPages, navbarConfig }: Ho
             <CardContainer
                 title={dynamicTitle}
                 cardData={enrichedCardData}
-                type={itemType} // Ahora obtenemos el tipo del store de Zustand
+                type={itemType}
                 onAdd={handleAddItem}
                 onEdit={handleEditItem}
                 onDelete={handleDeleteItem}
