@@ -3,9 +3,6 @@ import styled from 'styled-components';
 import Button from '../atoms/Button';
 import Label from '../atoms/Label';
 import Input from '../atoms/Input';
-import { useRouter } from 'next/navigation'
-import { CompanyService } from '@/services/company.service';
-import { toast } from 'react-toastify'
 
 const FormGroup = styled.div`
   margin-bottom: 1rem;
@@ -23,7 +20,7 @@ interface CompanyFormProps {
   onCancel: () => void;
 }
 
-const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
+const CompanyForm: React.FC<CompanyFormProps> = ({ initialData, onSubmit }) => {
   const [formData, setFormData] = React.useState<CompanyFormData>(
     initialData || {
       name: '',
@@ -31,24 +28,10 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
       contact: '',
     }
   );
-  const router = useRouter()
-  const companyService = new CompanyService()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const response = await companyService.create(formData)
-      if (response) {
-        toast.success('The company was created successfully')
-        router.refresh()
-      } else {
-        console.log('erorr')
-      }
-    } catch (error) {
-      console.error("Error al crear el coder:", error)
-    }
-
+    onSubmit(formData); // Llamar a onSubmit con formData
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -65,7 +48,6 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-
         />
       </FormGroup>
 
@@ -76,7 +58,6 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
           name="location"
           value={formData.location}
           onChange={handleChange}
-
         />
       </FormGroup>
 
@@ -96,7 +77,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ initialData }) => {
         label="Agregar"
         size="0.5em"
         bg={(theme) => theme.colors.accent.pink}
-        onClick={(e) => e}
+        onClick={handleSubmit} // Eliminar onClick si el botón usa onSubmit en el formulario
       />
     </form>
   );

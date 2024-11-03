@@ -1,14 +1,12 @@
 // components/Pagination.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import IButton from '../atoms/Button'; // Usa el componente de botón reutilizable
+import IButton from '../atoms/Button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { usePaginationStore } from '@/store/paginationStore';
 
 interface IPagination {
-  currentPage: number;
   totalPages: number;
-  onNext: () => void;
-  onPrevious: () => void;
 }
 
 const PaginationContainer = styled.div`
@@ -22,7 +20,18 @@ const PageNumber = styled.span`
   font-size: 1rem; 
 `;
 
-const Pagination: React.FC<IPagination> = ({ currentPage, totalPages, onNext, onPrevious }) => {
+const Pagination: React.FC<IPagination> = ({ totalPages }) => {
+  const { 
+    currentPage, 
+    nextPage, 
+    previousPage, 
+    setTotalPages 
+  } = usePaginationStore();
+
+  useEffect(() => {
+    setTotalPages(totalPages);
+  }, [setTotalPages, totalPages]);
+
   return (
     <PaginationContainer>
       <IButton
@@ -30,7 +39,7 @@ const Pagination: React.FC<IPagination> = ({ currentPage, totalPages, onNext, on
         iconColor='black'
         border='1px solid gray'
         borderRadius='50%'
-        onClick={onPrevious}
+        onClick={previousPage}
         size='0.4rem 0.1rem'
         bg='rgb(229, 231, 235)'
         disabled={currentPage === 1}
@@ -43,7 +52,7 @@ const Pagination: React.FC<IPagination> = ({ currentPage, totalPages, onNext, on
         borderRadius='50%'
         size='0.4rem 0.1rem'
         bg='rgb(229, 231, 235)'
-        onClick={onNext}
+        onClick={nextPage}
         disabled={currentPage === totalPages}
       />
     </PaginationContainer>

@@ -11,7 +11,6 @@ export class CompanyService {
     async findAll(page: number, size: number): Promise<ICompany[]> {
         try {
             const response = await this.httpClient.get<IResponseC>(`company?page=${page}&size=${size}`);
-            console.log(response.content)
             return response.content;
         } catch (error) {
             console.log(error);
@@ -21,9 +20,8 @@ export class CompanyService {
 
     async destroy(id: string) {
         try {
-            const coders = this.httpClient.delete<IVacant[]>(`Coders/${id}`)
-
-            return coders
+            const companyD = this.httpClient.delete<IVacant[]>(`company/${id}`)
+            return companyD
         } catch (error) {
             console.log(error)
             throw error;
@@ -40,9 +38,9 @@ export class CompanyService {
         }
     }
 
-    async save(id: string, coderName: string) {
+    async save(id: string, body: ICreateCompany) {
         try {
-            const actualizarCoder = await this.httpClient.put(`Coders/${id}`, { name: coderName });
+            const actualizarCoder = await this.httpClient.put(`company/${id}`, body);
             return actualizarCoder;
         } catch (error) {
             console.log(error);

@@ -37,6 +37,12 @@ const GridContainer = styled.div`
   }
 `;
 
+const Title = styled.h1`
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;    
+`;
 
 interface ICardContainer {
   cardData: ICard[];
@@ -46,14 +52,6 @@ interface ICardContainer {
   onEdit: (id: number | string, data: CompanyFormData | JobFormData) => void;
   onDelete: (id: number | string) => void;
 }
-
-
-const Title = styled.h1`
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-`;
 
 const CardContainer: React.FC<ICardContainer> = ({
   cardData,
@@ -69,7 +67,7 @@ const CardContainer: React.FC<ICardContainer> = ({
 
   const handleOpenModal = (mode: 'add' | 'edit', id?: number | string) => {
     setModalMode(mode);
-    if (id) setSelectedId(id); // No necesitas conversión
+    if (id) setSelectedId(id);
     setIsModalOpen(true);
   };
 
@@ -82,10 +80,11 @@ const CardContainer: React.FC<ICardContainer> = ({
     if (modalMode === 'add') {
       onAdd(data);
     } else if (modalMode === 'edit' && selectedId !== null) {
-      onEdit(selectedId, data); // No necesita conversión
+      onEdit(selectedId, data);
     }
     handleCloseModal();
   };
+
   const getInitialData = (id: number | string | null) => {
     if (id === null) return undefined;
     const card = cardData.find(card => card.id === id.toString() || card.id === id);
@@ -93,7 +92,7 @@ const CardContainer: React.FC<ICardContainer> = ({
 
     if (type === 'company') {
       return {
-        name: card.name, 
+        name: card.name,
         location: card.location,
         contact: card.contact,
       } as CompanyFormData;
@@ -102,11 +101,12 @@ const CardContainer: React.FC<ICardContainer> = ({
         title: card.title,
         description: card.description,
         status: card.status,
-        companyId: card.company?.name || '', // Encadenamiento opcional
+        companyId: card.company?.name || '',
       } as JobFormData;
     }
   };
-  const getButtonColor = (type: 'company' | 'vacant') => {
+
+  const getButtonColor = (type: 'vacant' | 'company') => {
     return (theme: DefaultTheme) => {
       const color = type === 'company' ? theme.colors.accent.pink.default : theme.colors.accent.purple.default;
       return {
@@ -126,7 +126,7 @@ const CardContainer: React.FC<ICardContainer> = ({
           icon={<CirclePlus />}
           bg={getButtonColor(type)}
           borderRadius="1.7rem"
-          width='20% 15%'
+          width='20%'
         />
       </HeaderContainer>
 
@@ -140,11 +140,11 @@ const CardContainer: React.FC<ICardContainer> = ({
             contact={data.contact}
             description={data.description}
             status={data.status}
-            onFirstButtonClick={() => handleOpenModal('edit', data.id)} // data.id es de tipo number | string
-            onSecondButtonClick={() => onDelete(data.id)} // data.id es de tipo number | string
-            id={data.id.toString()} // Si necesitas un string para el componente Card
+            company={data.company}
+            onFirstButtonClick={() => handleOpenModal('edit', data.id)}
+            onSecondButtonClick={() => onDelete(data.id)}
+            id={data.id.toString()} // Convertir a string si es necesario
           />
-
         ))}
       </GridContainer>
 

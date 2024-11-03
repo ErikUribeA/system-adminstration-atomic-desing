@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Input from '../atoms/Input';
 import Label from '../atoms/Label';
 import Select from '../atoms/Select';
 import Textarea from '../atoms/TextArea';
 import Button from '../atoms/Button';
-import { useRouter } from 'next/navigation'
-import { VacantService } from '@/services/vacantes.service';
-import { toast } from 'react-toastify'
+import { CompanyService } from '@/services/company.service';
+import { ICompany } from '@/types/card.model';
 
 export interface JobFormData {
     title: string;
@@ -26,8 +25,10 @@ const FormGroup = styled.div`
     margin-bottom: 1rem;
 `;
 
-const JobForm: React.FC<JobFormProps> = ({ initialData }) => {
-    const [formData, setFormData] = React.useState<JobFormData>(
+const useCompanyService = new CompanyService();
+
+const JobForm: React.FC<JobFormProps> = ({ initialData, onSubmit }) => {
+    const [formData, setFormData] = useState<JobFormData>(
         initialData || {
             title: '',
             description: '',
@@ -35,33 +36,30 @@ const JobForm: React.FC<JobFormProps> = ({ initialData }) => {
             companyId: '',
         }
     );
-    const router = useRouter();
-    const vacantService = new VacantService();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const [companyData, setCompanyData] = useState<ICompany[]>([]);
+
+    useEffect(() => {
+        const fetchCompanyData = async () => {
+            const data = await useCompanyService.findAll(1, 100);
+            setCompanyData(data);
+        };
+
+        fetchCompanyData();
+    }, []);
+
+    const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        try {
-            const response = await vacantService.create(formData)
-            if (response) {
-                toast.success('The vacant was created successfully')
-                router.refresh()
-            } else {
-                console.log('erorr')
-            }
-        } catch (error) {
-            console.error("Error al crear el coder:", error)
-        }
-
+        onSubmit(formData);
     };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleFormSubmit}>
             <FormGroup>
                 <Label htmlFor="title" text="Título de la Vacante" />
                 <Input
@@ -90,32 +88,25 @@ const JobForm: React.FC<JobFormProps> = ({ initialData }) => {
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Seleccionar Tipo' },
-                        { value: 'ACTIVE', label: 'OPEN' },
-                        { value: 'close', label: 'CLOSE' },
+                        { value: 'ACTIVE', label: 'ACTIVE' },
+                        { value: 'INACTIVE', label: 'INACTIVE' },
                     ]}
                 />
             </FormGroup>
 
-            {/* <FormGroup>
-                <Label htmlFor="company" text="Compañía" />
+            <FormGroup>
+                <Label htmlFor="companyId" text="Compañía" />
                 <Select
-                    name="company" // Corregido a "company"
+                    name="companyId"
                     value={formData.companyId}
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Seleccionar Compañía' },
-                        { value: 'fullStack', label: 'FullStack' },
+                        ...companyData.map(company => ({
+                            value: company.id, 
+                            label: company.name, 
+                        })),
                     ]}
-                />
-            </FormGroup>
-             */}
-            <FormGroup>
-                <Label htmlFor="title" text="Company id" />
-                <Input
-                    type="text"
-                    name="companyId"
-                    value={formData.companyId}
-                    onChange={handleChange}
                 />
             </FormGroup>
 
@@ -123,7 +114,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialData }) => {
                 width='100%'
                 borderRadius='0.5rem'
                 label="Agregar"
-                onClick={(e) => handleSubmit(e)}
+                onClick={handleFormSubmit}
                 size="0.5em"
             />
         </form>

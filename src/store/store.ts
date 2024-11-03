@@ -6,6 +6,6 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => ({
-    itemType: 'company',
+    itemType: 'vacant',
     setItemType: (type) => set({ itemType: type }),
 }))

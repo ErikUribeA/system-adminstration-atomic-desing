@@ -1,9 +1,10 @@
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
+import { ICreateCompany, ICreateVacancy } from '@/types/card.model'; // Ajusta la ruta según tu estructura
 
 // Interface para las props del componente styled
 interface StyledButtonProps {
-  $background: string | ((theme: DefaultTheme) => { default: string; hover: string; }); // bg puede ser una función que devuelve un objeto con default y hover
+  $background: string | ((theme: DefaultTheme) => { default: string; hover: string; }); 
   $size: string;
   $borderRadius?: string;
   $border?: string;
@@ -11,13 +12,18 @@ interface StyledButtonProps {
   $width?: string;
 }
 
+// Tipo específico para onClick
+type ButtonClickHandler = 
+  | ((e: React.MouseEvent<HTMLButtonElement>) => void)
+  | ((data: ICreateCompany | ICreateVacancy) => void | Promise<void>);
+
 // Interface para las props del componente Button
 interface IButton {
   label?: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: ButtonClickHandler;
   icon?: React.ReactNode;
   disabled?: boolean;
-  bg?: string | ((theme: DefaultTheme) => { default: string; hover: string; }); // Modificado para aceptar un objeto
+  bg?: string | ((theme: DefaultTheme) => { default: string; hover: string; });
   size?: string;
   borderRadius?: string;
   iconColor?: string;
@@ -27,7 +33,6 @@ interface IButton {
   width?: string;
 }
 
-// Componente estilizado usando transient props (con $)
 const ButtonStyled = styled.button<StyledButtonProps>`
   display: flex;
   align-items: center;
@@ -47,15 +52,14 @@ const ButtonStyled = styled.button<StyledButtonProps>`
     width: ${({ $width }) => $width || 'auto'};
   }
   
-  // Manejo del fondo
   background-color: ${({ $background, theme }) => {
     return typeof $background === 'function' ? $background(theme).default : $background;
   }};
 
   &:hover {
     background-color: ${({ $background, theme }) => {
-    return typeof $background === 'function' ? $background(theme).hover : $background;
-  }};
+      return typeof $background === 'function' ? $background(theme).hover : $background;
+    }};
     opacity: 0.9;
   }
 `;
@@ -65,7 +69,7 @@ const Button: React.FC<IButton> = ({
   onClick,
   icon,
   disabled = false,
-  bg = () => ({ default: 'rgb(168, 85, 247)', hover: 'rgb(140, 70, 200)' }), // Función por defecto
+  bg = () => ({ default: 'rgb(168, 85, 247)', hover: 'rgb(140, 70, 200)' }),
   size = '0.5rem 1rem',
   borderRadius = '1rem',
   iconColor = 'white',
@@ -76,10 +80,10 @@ const Button: React.FC<IButton> = ({
 }) => {
   return (
     <ButtonStyled
-      onClick={onClick}
+      onClick={onClick as (e: React.MouseEvent<HTMLButtonElement>) => void}
       disabled={disabled}
       $size={size}
-      $background={bg} // bg puede ser función o string
+      $background={bg}
       $borderRadius={borderRadius}
       $border={border}
       $color={color}

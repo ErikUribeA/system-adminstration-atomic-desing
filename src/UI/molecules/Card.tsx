@@ -49,21 +49,18 @@ const Card: React.FC<ICard> = ({
   return (
     <CardContainer>
 
-      {itemType === 'vacant' && (
+      {itemType === 'vacant' ? (
         <>
-          <CardTitle>{name}</CardTitle>
           <CardTitle>{title}</CardTitle>
-          <CardInfo>Descripción: {description}</CardInfo>
-          <CardInfo>Estado: {status}</CardInfo>
-          <CardInfo>Empresa: {company?.name}</CardInfo>
+          <CardInfo>Description: {description}</CardInfo>
+          <CardInfo>Status: {status}</CardInfo>
+          <CardInfo>Company: {company?.name}</CardInfo>
         </>
-      )}
-
-      {itemType === 'company' && (
+      ) : (
         <>
           <CardTitle>{name}</CardTitle>
-          <CardInfo>Ciudad: {location}</CardInfo>
-          <CardInfo>Teléfono: {contact}</CardInfo>
+          <CardInfo>City: {location}</CardInfo>
+          <CardInfo>Phone: {contact}</CardInfo>
         </>
       )}
 
@@ -84,6 +81,7 @@ const Card: React.FC<ICard> = ({
           bg='rgb(255, 255, 255)'
           borderRadius="0.5rem"
           border="2px solid  rgb(229, 231, 235)"
+          size='0.5rem'
         />
       </ButtonContainer>
     </CardContainer>

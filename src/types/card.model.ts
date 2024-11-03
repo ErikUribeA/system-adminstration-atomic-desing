@@ -7,6 +7,46 @@ export interface IVacant {
 
 }
 
+export interface ICompany {
+    id: string;
+    name: string;
+    location: string;
+    contact: string;
+}
+
+
+export interface ICompanyResponse {
+    content:          ICompany[];
+    pageable:         Pageable;
+    totalElements:    number;
+    totalPages:       number;
+    last:             boolean;
+    numberOfElements: number;
+    size:             number;
+    number:           number;
+    sort:             Sort;
+    first:            boolean;
+    empty:            boolean;
+}
+
+export interface Pageable {
+    pageNumber: number;
+    pageSize:   number;
+    sort:       Sort;
+    offset:     number;
+    unpaged:    boolean;
+    paged:      boolean;
+}
+
+export interface Sort {
+    unsorted: boolean;
+    sorted:   boolean;
+    empty:    boolean;
+}
+
+
+
+
 export interface IResponseV {
     content: IVacant[]
 }
@@ -15,12 +55,7 @@ export interface IResponseC {
     content: ICompany[]
 }
 
-export interface ICompany {
-    id: string;
-    name: string;
-    location: string;
-    contact: string;
-}
+
 
 export interface ICreateCompany {
     name: string,
@@ -33,29 +68,27 @@ export interface ICreateVacancy {
     description: string,
     status: string,
     companyId: string
-
 }
-
 export interface ICard {
     id: string | number;
-    type?: 'company' | 'vacant';  // Add this line
-    name?: string;               // Make optional since vacant won't have it
-    location?: string;           // Make optional since vacant won't have it
-    contact?: string;            // Make optional since vacant won't have it
-    title?: string;              // Make optional since company won't have it
-    description?: string;        // Make optional since company won't have it
-    status?: string;             // Make optional since company won't have it
+    type?: 'company' | 'vacant';
+    name?: string;
+    location?: string;
+    contact?: string;
+    title?: string;
+    description?: string;
+    status?: string;
     company?: ICompany;
-    onFirstButtonClick: () => void;
-    onSecondButtonClick: () => void;
+    onFirstButtonClick: (data: ICreateCompany | ICreateVacancy) => Promise<void> | void;
+    onSecondButtonClick: (data: ICreateCompany | ICreateVacancy) => Promise<void> | void;
 }
 
-
+// Luego actualizamos la función transformToCard para que coincida con los tipos
 export const transformToCard = (
     item: ICompany | IVacant,
     type: 'company' | 'vacant',
-    onFirstButtonClick: () => void,
-    onSecondButtonClick: () => void
+    onFirstButtonClick: (data: ICreateCompany | ICreateVacancy) => Promise<void>,
+    onSecondButtonClick: (data: ICreateCompany | ICreateVacancy) => Promise<void>
 ): ICard => {
     if (type === 'company') {
         const company = item as ICompany;
@@ -65,8 +98,8 @@ export const transformToCard = (
             name: company.name,
             location: company.location,
             contact: company.contact,
-            onFirstButtonClick,
-            onSecondButtonClick
+            onFirstButtonClick: async (data) => await onFirstButtonClick(data),
+            onSecondButtonClick: async (data) => await onSecondButtonClick(data)
         };
     } else {
         const vacant = item as IVacant;
@@ -77,8 +110,8 @@ export const transformToCard = (
             description: vacant.description,
             status: vacant.status,
             company: vacant.company,
-            onFirstButtonClick,
-            onSecondButtonClick
+            onFirstButtonClick: async (data) => await onFirstButtonClick(data),
+            onSecondButtonClick: async (data) => await onSecondButtonClick(data)
         };
     }
 };

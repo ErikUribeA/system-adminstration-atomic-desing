@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../atoms/Button';
@@ -97,7 +98,7 @@ const Navbar: React.FC<INavbar> = ({
           />
           <Button
             label={secondButtonLabel}
-            color={itemType === 'company' ? "white" : "#374151"} // Cambiado para cambiar el color según el itemType
+            color={itemType === 'company' ? "white" : "#374151"}
             icon={<Briefcase size={16} />}
             onClick={handleFirstButtonClick}
             bg={itemType === 'company' ? "#ec4899" : "transparent"}

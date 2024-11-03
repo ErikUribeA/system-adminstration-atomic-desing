@@ -11,7 +11,7 @@ export class VacantService {
     async findAll(page: number, size: number): Promise<IVacant[]> {
         try {
             const response = await this.httpClient.get<IResponseV>(`vacants?page=${page}&size=${size}`);
-
+            console.log(response.content)
             return response.content;
         } catch (error) {
             console.log(error);
@@ -21,9 +21,8 @@ export class VacantService {
 
     async destroy(id: string) {
         try {
-            const coders = this.httpClient.delete<IVacant[]>(`Coders/${id}`)
-
-            return coders
+            const vacantD = this.httpClient.delete<IVacant[]>(`vacants/${id}`)
+            return vacantD
         } catch (error) {
             console.log(error)
             throw error;
@@ -40,9 +39,9 @@ export class VacantService {
         }
     }
 
-    async save(id: string, coderName: string) {
+    async save(id: string, body:ICreateVacancy) {
         try {
-            const actualizarCoder = await this.httpClient.put(`Coders/${id}`, { name: coderName });
+            const actualizarCoder = await this.httpClient.put(`vacants/${id}`, body);
             return actualizarCoder;
         } catch (error) {
             console.log(error);
