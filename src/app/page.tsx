@@ -24,7 +24,7 @@ const HomePage = () => {
     secondButtonLabel: "Compañias"
   };
 
-  const totalPages = 5;
+  const totalPages = 3;
 
   useEffect(() => {
     const fetchData = async () => {
